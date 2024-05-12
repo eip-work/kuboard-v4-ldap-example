@@ -16,6 +16,8 @@ To run the example, you have to prepare:
 * Execute the following command in the source code root directory.
 
   ```sh
+  git clone https://github.com/eip-work/kuboard-v4-ldap-example.git
+  cd kuboard-v4-ldap-example
   docker compose up -d
   ```
 
