@@ -1,0 +1,15 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: kuboard-v4-example-user-repository
+  jackson:
+    default-property-inclusion: NON_NULL
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+    time-zone: Asia/Shanghai
+  ldap:
+    urls: ${LDAP_URL:ldap://localhost:1389}
+    username: ${LDAP_USERNAME:cn=admin,dc=kuboard,dc=cn}
+    password: ${LDAP_PASSWORD:Kuboard123}
+    base: ${LDAP_BASE:ou=users,dc=kuboard,dc=cn}

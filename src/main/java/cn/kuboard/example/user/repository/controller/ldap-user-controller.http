@@ -1,0 +1,15 @@
+###
+GET http://localhost:9090/api/kuboard/example/ldap-users?username=user
+
+###
+GET http://localhost:9090/api/kuboard/example/ldap-users/user01
+
+
+###
+POST http://localhost:9090/api/kuboard/example/ldap-users HTTP/1.1
+content-type: application/json
+
+{
+  "username": "user01",
+  "password": "password1"
+}

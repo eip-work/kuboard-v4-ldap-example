@@ -1,0 +1,71 @@
+configs:
+  create_db_sql:
+    content: |
+      CREATE DATABASE kuboard DEFAULT CHARACTER SET = 'utf8mb4' DEFAULT COLLATE = 'utf8mb4_unicode_ci';
+      create user 'kuboard'@'%' identified by 'kuboardpwd';
+      grant all privileges on kuboard.* to 'kuboard'@'%';
+      FLUSH PRIVILEGES;
+
+services:
+  openldap:
+    image: bitnami/openldap:2.6.7
+    ports:
+      - '1389:1389'
+      - '1636:1636'
+    environment:
+      - LDAP_ROOT=dc=kuboard,dc=cn
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=Kuboard123
+      - LDAP_USERS=user01,user02
+      - LDAP_PASSWORDS=password1,password2
+      - LDAP_GROUP=test-group
+    networks:
+      kuboard_v4_ldap_example:
+        aliases:
+          - openldap
+  kuboard-ldap-example:
+    image: eipwork/kuboard-v4-ldap-example:v4
+    environment:
+      - LDAP_URL=ldap://openldap:1389
+      - LDAP_USERNAME=cn=admin,dc=kuboard,dc=cn
+      - LDAP_PASSWORD=Kuboard123
+      - LDAP_BASE=ou=users,dc=kuboard,dc=cn
+    networks:
+      kuboard_v4_ldap_example:
+        aliases:
+          - ldap-example
+  db:
+    image: mariadb:11.2.2-jammy
+    environment:
+      MARIADB_ROOT_PASSWORD: kuboardpwd
+      MYSQL_ROOT_PASSWORD: kuboardpwd
+      TZ: Asia/Shanghai
+    volumes:
+      - ./data/kuboard-mariadb:/var/lib/mysql:Z
+    configs:
+      - source: create_db_sql
+        target: /docker-entrypoint-initdb.d/create_db.sql
+        mode: 0777
+    networks:
+      kuboard_v4_ldap_example:
+        aliases:
+          - db
+  kuboard:
+    image: eipwork/kuboard:v4
+    environment:
+      - DB_DRIVER=org.mariadb.jdbc.Driver
+      - DB_URL=jdbc:mariadb://db:3306/kuboard?serverTimezone=Asia/Shanghai
+      - DB_USERNAME=kuboard
+      - DB_PASSWORD=kuboardpwd
+    ports:
+      - '8000:80'
+    depends_on:
+      - db
+    networks:
+      kuboard_v4_ldap_example:
+        aliases:
+          - kuboard
+
+networks:
+  kuboard_v4_ldap_example:
+    driver: bridge
