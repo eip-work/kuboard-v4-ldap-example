@@ -1,5 +1,5 @@
 
-FROM  maven:3.8.5-openjdk-17 AS builder
+FROM  docker.m.daocloud.io/maven:3.8.5-openjdk-17 AS builder
 ARG KUBOARD_LDAP_EXAMPLE_VERSION="0.0.1-SNAPSHOT"
 
 ENV TZ="Asia/Shanghai"
@@ -11,7 +11,7 @@ COPY ./pom.xml /app/pom.xml
 
 RUN mvn -Drevision=${KUBOARD_LDAP_EXAMPLE_VERSION} -DskipTests=true clean package
 
-FROM openjdk:17-ea-33-slim
+FROM docker.m.daocloud.io/openjdk:17-ea-33-slim
 ARG KUBOARD_LDAP_EXAMPLE_VERSION="0.0.1-SNAPSHOT"
 
 WORKDIR /app

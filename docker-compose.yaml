@@ -8,7 +8,7 @@ configs:
 
 services:
   openldap:
-    image: bitnami/openldap:2.6.7
+    image: docker.m.daocloud.io/bitnami/openldap:2.6.7
     ports:
       - '1389:1389'
       - '1636:1636'
@@ -24,7 +24,7 @@ services:
         aliases:
           - openldap
   kuboard-ldap-example:
-    image: eipwork/kuboard-v4-ldap-example:v4
+    image: swr.cn-east-2.myhuaweicloud.com/kuboard/kuboard-v4-ldap-example:v4
     environment:
       - LDAP_URL=ldap://openldap:1389
       - LDAP_USERNAME=cn=admin,dc=kuboard,dc=cn
@@ -35,7 +35,7 @@ services:
         aliases:
           - ldap-example
   db:
-    image: mariadb:11.2.2-jammy
+    image: docker.m.daocloud.io/mariadb:11.2.2-jammy
     environment:
       MARIADB_ROOT_PASSWORD: kuboardpwd
       MYSQL_ROOT_PASSWORD: kuboardpwd
@@ -51,12 +51,13 @@ services:
         aliases:
           - db
   kuboard:
-    image: eipwork/kuboard:v4
+    image: swr.cn-east-2.myhuaweicloud.com/kuboard/kuboard:v4
     environment:
       - DB_DRIVER=org.mariadb.jdbc.Driver
       - DB_URL=jdbc:mariadb://db:3306/kuboard?serverTimezone=Asia/Shanghai
       - DB_USERNAME=kuboard
       - DB_PASSWORD=kuboardpwd
+    restart: always
     ports:
       - '8000:80'
     depends_on:
