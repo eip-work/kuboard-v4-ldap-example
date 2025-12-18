@@ -77,16 +77,16 @@ public class LdapUserController implements KuboardWebhookUserSpi {
       log.info("user {} login success.", username);
       return KuboardWebhookResponse.success(null);
     } catch (AuthenticationException e) {
-      log.info("user {} login failed. {} - {}", username, e.getClass().getSigners(), e.getMessage());
+      log.error("user {} login failed. {} - {}", username, e.getClass().getSigners(), e.getMessage());
       return KuboardWebhookResponse.error(KuboardWebhookResponse.AUTHENTICATION_FAILED, "AuthenticationException", e.getMessage());
     } catch (UncategorizedLdapException e) {
-      log.info("user {} login failed. {} - {}", username, e.getClass().getSigners(), e.getMessage());
+      log.error("user {} login failed. {} - {}", username, e.getClass().getSigners(), e.getMessage());
       return KuboardWebhookResponse.error(KuboardWebhookResponse.INTERNAL_SERVER_ERROR, "UncategorizedLdapException", e.getMessage());
     } catch (NamingException e) {
-      log.info("user {} login failed. {} - {}", username, e.getClass().getSigners(), e.getMessage());
+      log.error("user {} login failed. {} - {}", username, e.getClass().getSigners(), e.getMessage());
       return KuboardWebhookResponse.error(KuboardWebhookResponse.INTERNAL_SERVER_ERROR, "NamingException", e.getMessage());
     } catch (EmptyResultDataAccessException e) {
-      log.info("user {} login failed. {} - {}", username, e.getClass().getSigners(), e.getMessage());
+      log.error("user {} login failed. {} - {}", username, e.getClass().getSigners(), e.getMessage());
       return KuboardWebhookResponse.error(KuboardWebhookResponse.USER_NOT_FOUND, "EmptyResultDataAccessException", e.getMessage());
     }
   }
@@ -124,8 +124,10 @@ public class LdapUserController implements KuboardWebhookUserSpi {
         result.setPageSize(pageSize);
         result.setPageNum(pageNum);
         result.setTotal(userList.size());
+        log.info("count: {}", userList.size());
         return KuboardWebhookResponse.success(result);
       } catch (Exception e) {
+        log.error("list user failed: {} - {}", e.getClass().getSimpleName(), e.getMessage());
         return KuboardWebhookResponse.error(KuboardWebhookResponse.INTERNAL_SERVER_ERROR, e.getClass().getSimpleName(), e.getMessage());
       }
   }
@@ -149,8 +151,10 @@ public class LdapUserController implements KuboardWebhookUserSpi {
       KuboardWebhookUser user = ldapTemplate.lookup("cn=" + username, new KuboardWebhookUserAttributeMapper());
       return KuboardWebhookResponse.success(user);
     } catch(NamingException e) {
+      log.error("findByUsername failed: {} - {}", e.getClass().getSimpleName(), e.getMessage());
       return KuboardWebhookResponse.error(KuboardWebhookResponse.USER_NOT_FOUND, e.getClass().getSimpleName(), e.getMessage());
     } catch (Exception e) {
+      log.error("findByUsername failed: {} - {}", e.getClass().getSimpleName(), e.getMessage());
       return KuboardWebhookResponse.error(KuboardWebhookResponse.INTERNAL_SERVER_ERROR, e.getClass().getSimpleName(), e.getMessage());
     }
     

@@ -8,7 +8,7 @@ configs:
 
 services:
   openldap:
-    image: docker.m.daocloud.io/bitnami/openldap:2.6.7
+    image: bitnami/openldap:2.6.7
     ports:
       - '1389:1389'
       - '1636:1636'
