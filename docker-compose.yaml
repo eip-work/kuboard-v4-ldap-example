@@ -8,7 +8,7 @@ configs:
 
 services:
   openldap:
-    image: bitnami/openldap:2.6.7
+    image: swr.cn-east-2.myhuaweicloud.com/kuboard/openldap:2.6
     ports:
       - '1389:1389'
       - '1636:1636'
